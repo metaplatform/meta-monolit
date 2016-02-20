@@ -24,6 +24,11 @@ var Monolit = function(options){
 
 	logger.info("Initializing Monolit...");
 
+	var brokerAuth = new Api.BrokerLocalAuth(options.brokerAuthDb || "./broker.auth.json");
+
+	if(!options.broker) options.broker = {};
+	options.broker.authProvider = brokerAuth;
+
 	this.broker = new Api.Broker(Api.MemoryQueue, options.broker || {});
 	this.server = new Api.Server(this.broker, options.server || {});
 
@@ -68,7 +73,7 @@ Monolit.prototype.loadService = function(service){
 			//Create API client and connect
 			var apiClient = new Api.Client(service.name);
 
-			apiClient.connect(self.broker).then(function(){
+			apiClient.connect(self.broker, opts.secret).then(function(){
 
 				//Load module
 				try {
