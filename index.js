@@ -29,7 +29,7 @@ var Monolit = function(options){
 	if(!options.broker) options.broker = {};
 	options.broker.authProvider = brokerAuth;
 
-	this.broker = new Api.Broker(Api.MemoryQueue, options.broker || {});
+	this.broker = new Api.Broker(( options.brokerQueue ? options.brokerQueue : Api.MemoryQueue ), options.broker || {});
 	this.server = new Api.Server(this.broker, options.server || {});
 
 	this.services = [];
