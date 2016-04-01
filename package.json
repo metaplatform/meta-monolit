@@ -26,8 +26,8 @@
     "should": "^6.0.3"
   },
   "dependencies": {
-    "meta-api-local": "*",
-    "meta-api-shared": "*",
+    "meta-api-local": "git+https://github.com/metaplatform/meta-api-local.git#master",
+    "meta-api-shared": "git+https://github.com/metaplatform/meta-api-shared.git#master",
     "meta-logger": "^1.0.3"
   }
 }
