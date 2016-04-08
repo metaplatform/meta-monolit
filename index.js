@@ -181,7 +181,7 @@ Monolit.prototype.bindExit = function(handler){
 	cb = function(){
 
 		//Check state
-		if(exited) return;
+		if(exited) return process.exit();
 		exited = true;
 
 		//Stop broker
