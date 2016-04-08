@@ -32,6 +32,8 @@ var Monolit = function(options){
 	this.broker = new Api.Broker(( options.brokerQueue ? options.brokerQueue : Api.MemoryQueue ), options.broker || {});
 	this.server = new Api.Server(this.broker, options.server || {});
 
+	this.apiConfig = options.apiClient;
+	this.apiClient = null;
 	this.services = [];
 
 	logger.info("Starting API server...");
@@ -104,6 +106,17 @@ Monolit.prototype.start = function(){
 	var self = this;
 	var task = Promise.resolve();
 
+	//Create local API client
+	if(this.apiConfig){
+
+		this.apiClient = new Api.Client(this.apiConfig.service);
+
+		task = task.then(function(){
+			return self.apiClient.connect(self.broker, self.apiConfig.secret);
+		});
+
+	}
+
 	//Load services
 	var addService = function(service){
 
@@ -157,6 +170,37 @@ Monolit.prototype.start = function(){
 	});
 
 	return task;
+
+};
+
+Monolit.prototype.bindExit = function(handler){
+
+	var self = this;
+	var exited = false;
+
+	cb = function(){
+
+		//Check state
+		if(exited) return;
+		exited = true;
+
+		//Stop broker
+		if(self.broker) self.broker.terminate();
+
+		if(!handler) return process.exit();
+
+		handler.call().then(function(){
+			process.exit();
+		}, function(err){
+			logger.warn("Error occoured during exit handling:", err);
+			process.exit();
+		});
+
+	};
+
+	//Bind events
+	process.on('exit', cb);
+	process.on('SIGINT', cb);
 
 };
 
