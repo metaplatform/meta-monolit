@@ -201,6 +201,7 @@ Monolit.prototype.bindExit = function(handler){
 	//Bind events
 	process.on('exit', cb);
 	process.on('SIGINT', cb);
+	process.on('SIGTERM', cb);
 
 };
 
