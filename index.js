@@ -161,6 +161,8 @@ Monolit.prototype.start = function(){
 	//Start API server
 	task.then(function(){
 
+		self.broker.start();
+
 		return self.server.start().then(function(){
 			logger.info("API server started.");
 		}, function(err){
